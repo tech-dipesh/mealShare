@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   Card,
   CardContent,
@@ -10,55 +10,58 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
-} from '@mui/material'
+  DialogActions,
+} from "@mui/material";
 import {
   Phone,
   LocationOn,
   AccessTime,
   Delete,
-  PersonPin
-} from '@mui/icons-material'
+  PersonPin,
+} from "@mui/icons-material";
 // import { FoodItem } from '../../types/food'
 // import { formatTimeAgo, formatCurrency } from '../../utils/formatdata'
 // import { useFoodItems } from '../../hooks/usefooditems'
-import { FoodItem } from '../types/food'
-import { formatTimeAgo, formatCurrency } from "../utils/formatdata.tsx"
-import { useFoodItems } from "../hooks/usrefooditmes.tsx"
+import { FoodItem } from "../types/food";
+import { formatTimeAgo, formatCurrency } from "../utils/formatdata.tsx";
+import { useFoodItems } from "../hooks/usefooditmes.tsx";
 
 interface FoodCardProps {
-  food: FoodItem
+  food: FoodItem;
 }
 
 const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
-  const { deleteFood, updateFoodStatus, isUserPost } = useFoodItems()
-  const [deleteDialog, setDeleteDialog] = React.useState(false)
-  const [contactDialog, setContactDialog] = React.useState(false)
+  const { deleteFood, updateFoodStatus, isUserPost } = useFoodItems();
+  const [deleteDialog, setDeleteDialog] = React.useState(false);
+  const [contactDialog, setContactDialog] = React.useState(false);
 
   const handleDelete = async () => {
-    const success = await deleteFood(food._id)
+    const success = await deleteFood(food._id);
     if (success) {
-      setDeleteDialog(false)
+      setDeleteDialog(false);
     }
-  }
+  };
 
   const handleClaim = async () => {
-    await updateFoodStatus(food._id, 'claimed')
-  }
+    await updateFoodStatus(food._id, "claimed");
+  };
 
   const handleMarkAvailable = async () => {
-    await updateFoodStatus(food._id, 'available')
-  }
+    await updateFoodStatus(food._id, "available");
+  };
 
-  const isAvailable = food.status === 'available'
-  const userOwnsPost = isUserPost(food._id)
+  const isAvailable = food.status === "available";
+  const userOwnsPost = isUserPost(food._id);
 
   return (
     <>
       <Card className="h-full shadow-soft hover:shadow-medium transition-shadow duration-200">
         <CardContent className="p-4 space-y-3">
           <Box className="flex justify-between items-start">
-            <Typography variant="h6" className="font-semibold text-gray-800 flex-1">
+            <Typography
+              variant="h6"
+              className="font-semibold text-gray-800 flex-1"
+            >
               {food.foodName}
             </Typography>
             <Box className="flex items-center space-x-1">
@@ -67,8 +70,8 @@ const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
                 size="small"
                 className={
                   isAvailable
-                    ? 'bg-success-100 text-success-700'
-                    : 'bg-warning-100 text-warning-700'
+                    ? "bg-success-100 text-success-700"
+                    : "bg-warning-100 text-warning-700"
                 }
               />
               {userOwnsPost && (
@@ -88,22 +91,26 @@ const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
               <Typography variant="body2" className="font-medium text-gray-600">
                 Quantity: {food.totalItems} items
               </Typography>
-              <Typography variant="body2" className="font-bold text-primary-600">
+              <Typography
+                variant="body2"
+                className="font-bold text-primary-600"
+              >
                 {formatCurrency(food.cost)}
               </Typography>
             </Box>
 
             {food.description && (
-              <Typography variant="body2" className="text-gray-600 line-clamp-2">
+              <Typography
+                variant="body2"
+                className="text-gray-600 line-clamp-2"
+              >
                 {food.description}
               </Typography>
             )}
 
             <Box className="flex items-center space-x-1 text-gray-500">
               <PersonPin fontSize="small" />
-              <Typography variant="body2">
-                {food.posterName}
-              </Typography>
+              <Typography variant="body2">{food.posterName}</Typography>
             </Box>
 
             <Box className="flex items-center space-x-1 text-gray-500">
@@ -144,7 +151,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
                 </Button>
               )
             )}
-            
+
             {isAvailable && !userOwnsPost && (
               <Button
                 variant="outlined"
@@ -203,7 +210,8 @@ const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
         <DialogTitle>Delete Food Item</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete "{food.foodName}"? This action cannot be undone.
+            Are you sure you want to delete "{food.foodName}"? This action
+            cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
@@ -214,7 +222,7 @@ const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
         </DialogActions>
       </Dialog>
     </>
-  )
-}
+  );
+};
 
-export default FoodCard
+export default FoodCard;
