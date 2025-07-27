@@ -1,0 +1,17 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.MuiContainer-root {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .MuiContainer-root {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}
