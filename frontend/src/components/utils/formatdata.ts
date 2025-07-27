@@ -1,5 +1,5 @@
 import { format, formatDistanceToNow, isToday, isYesterday } from 'date-fns'
-import { formatTimeAgo } from '@/utils/formatdata';
+// import { formatTimeAgo } from '@/utils/formatdata';
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
   
