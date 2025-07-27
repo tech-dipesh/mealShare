@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import connectDB from './config/database.js';
-import errorHandler from './middleware/errorHandler.js';
+import errorHandler from './middleware/errorhandle.js'
 import foodRoutes from './routes/food.js';
 
 dotenv.config();
