@@ -18,7 +18,7 @@ import Grid from "@mui/material/Grid";
 
 import { Search, FilterList } from "@mui/icons-material";
 import { FoodFilters } from "../types/food";
-import { useFoodItems } from "../hooks/usefooditmes";
+import { useFoodItems } from "../hooks/usrefooditmes";
 import FoodCard from "./foodcard";
 import Loading from "../common/loading";
 
@@ -32,8 +32,10 @@ const FoodList: React.FC = () => {
     limit: 12,
   });
 
-  const handleFilterChange = (key: keyof FoodFilters, value: string | number) => {
-
+  const handleFilterChange = (
+    key: keyof FoodFilters,
+    value: string | number
+  ) => {
     const newFilters = { ...filters, [key]: value };
     if (key !== "page") {
       newFilters.page = 1;

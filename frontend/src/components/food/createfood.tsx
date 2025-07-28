@@ -1,7 +1,4 @@
-// import * as React from "react";
-// import React from "react";
-import * as React from "react";
-
+import React from "react";
 import {
   Card,
   CardContent,
@@ -23,7 +20,7 @@ import {
   PersonPin,
 } from "@mui/icons-material";
 import { FoodItem } from "../types/food";
-import { formatTimeAgo, formatCurrency } from "../utils/formatdata";
+import { formatTimeAgo, formatCurrency } from "../utils/formatdata.tsx";
 import { useFoodItems } from "../hooks/usrefooditmes";
 
 interface FoodCardProps {
@@ -32,26 +29,26 @@ interface FoodCardProps {
 
 const FoodCard: React.FC<FoodCardProps> = ({ food }) => {
   const { deleteFood, updateFoodStatus, isUserPost } = useFoodItems();
-  const [deleteDialog, setDeleteDialog] = React.useState<boolean>(false);
-  const [contactDialog, setContactDialog] = React.useState<boolean>(false);
+  const [deleteDialog, setDeleteDialog] = React.useState(false);
+  const [contactDialog, setContactDialog] = React.useState(false);
 
-  const handleDelete = async (): Promise<void> => {
+  const handleDelete = async () => {
     const success = await deleteFood(food._id);
     if (success) {
       setDeleteDialog(false);
     }
   };
 
-  const handleClaim = async (): Promise<void> => {
+  const handleClaim = async () => {
     await updateFoodStatus(food._id, "claimed");
   };
 
-  const handleMarkAvailable = async (): Promise<void> => {
+  const handleMarkAvailable = async () => {
     await updateFoodStatus(food._id, "available");
   };
 
-  const isAvailable: boolean = food.status === "available";
-  const userOwnsPost: boolean = isUserPost(food._id);
+  const isAvailable = food.status === "available";
+  const userOwnsPost = isUserPost(food._id);
 
   return (
     <>

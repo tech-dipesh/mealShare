@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import { Toaster } from 'react-hot-toast'
-import App from './App.tsx'
+import App from './App'
 import './index.css'
 
 const theme = createTheme({
@@ -21,7 +21,7 @@ const theme = createTheme({
   },
 })
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+// const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
