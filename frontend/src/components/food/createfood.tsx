@@ -21,7 +21,7 @@ import {
 } from "@mui/icons-material";
 import { FoodItem } from "../types/food";
 import { formatTimeAgo, formatCurrency } from "../utils/formatdata.tsx";
-import { useFoodItems } from "../hooks/usrefooditmes";
+import { useFoodItems } from "../hooks/useUserfooditmes";
 
 interface FoodCardProps {
   food: FoodItem;

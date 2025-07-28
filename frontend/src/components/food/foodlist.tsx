@@ -18,7 +18,7 @@ import Grid from "@mui/material/Grid";
 
 import { Search, FilterList } from "@mui/icons-material";
 import { FoodFilters } from "../types/food";
-import { useFoodItems } from "../hooks/usrefooditmes";
+import { useFoodItems } from "../hooks/useUserfooditmes";
 import FoodCard from "./foodcard";
 import Loading from "../common/loading";
 
