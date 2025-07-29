@@ -1,4 +1,4 @@
-import supabase from '../config/supabase.js';
+import {supabase} from '../config/supabase.js';
 import transporter from '../config/email.js';
 import { signToken } from '../config/jwt.js';
 import bcrypt from 'bcrypt';
@@ -38,3 +38,27 @@ export const login = async (req, res, next) => {
   const token = signToken({ id: user.id });
   res.json({ token });
 };
+
+
+export const verifyEmail = async (req, res, next) => {
+  try {
+    const payload = verifyToken(req.params.token)
+    await supabase.from('users').update({ email_verified: true }).eq('id', payload.id)
+    res.json({ message: 'Email verified' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const resetPassword = async (req, res, next) => {
+  const { email } = req.body
+  const { data: user, error: findErr } = await supabase.from('users').select('id').eq('email', email).single()
+  if (findErr || !user) return res.status(400).json({ message: 'Email not found' })
+  const token = signToken({ id: user.id })
+  await transporter.sendMail({
+    to: email,
+    subject: 'Reset your password',
+    text: `${process.env.FRONTEND_URL}/reset/${token}`
+  })
+  res.json({ message: 'Password reset email sent' })
+}

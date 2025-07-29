@@ -6,7 +6,8 @@ import { validate } from '../middleware/validation.js'
 
 const router = Router()
 
-router.get('/:id?', auth, getProfile)
+// router.get('/:id?', auth, getProfile)
+router.get('/:id', auth, getProfile)
 router.patch(
   '/',
   auth,
