@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Container } from '@mui/material'
 import Header from './components/common/header'
 import Footer from './components/common/footer'
-import {Home} from "./components/pages/home.tsx"
+import {Home} from "./pages/home"
 import './App.css'
 
 function App() {
