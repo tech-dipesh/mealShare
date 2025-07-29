@@ -1,15 +1,11 @@
-export const successResponse = (res, data, message = '', status = 200) => {
-  res.status(status).json({
-    success: true,
-    message,
-    data
-  });
-};
+export const ok = (res, data) =>
+  res.status(200).json(data);
 
-export const errorResponse = (res, message, status = 400, errors = []) => {
-  res.status(status).json({
-    success: false,
-    message,
-    errors
-  });
-};
+export const badRequest = (res, message) =>
+  res.status(400).json({ error: message });
+
+export const notFound = (res, message) =>
+  res.status(404).json({ error: message });
+
+export const unauthorized = (res, message) =>
+  res.status(401).json({ error: message });
