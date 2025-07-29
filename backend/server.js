@@ -1,44 +1,28 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import connectDB from './config/database.js';
-// import errorHandler from './middleware/errorhandle.js'
-import { errorHandler } from './middleware/errorhandle.js';
-// Note the curly braces around errorHandler
+import cors from 'cors';
+import authRoutes from './routes/auth.js';
+import categoryRoutes from './routes/category.js';
 import foodRoutes from './routes/food.js';
+import claimRoutes from './routes/claim.js';
+import ratingRoutes from './routes/rating.js';
+import userRoutes from './routes/user.js';
+import { errorHandler } from './middleware/errorhandle.js';
 
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-connectDB();
+app.use(cors());
+app.use(express.json());
 
-app.use(helmet());
-app.use(cors({
-  origin: process.env.CORS_ORIGIN,
-  credentials: true
-}));
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-});
-app.use(limiter);
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/food', foodRoutes);
-
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
+app.use('/api/claims', claimRoutes);
+app.use('/api/ratings', ratingRoutes);
+app.use('/api/users', userRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
