@@ -1,31 +1,29 @@
 import { Router } from 'express'
-import { getAllFood, getFoodById, createFood, updateFoodStatus, deleteFood, getFoodStats } from '../controllers/foodcontroller.js'
-import { body, query } from 'express-validator'
+import { body, query, param } from 'express-validator'
+import multer from 'multer'
+import { auth } from '../middleware/auth.js'
+import { createFood, listFood, getFood, deleteFood } from '../controllers/foodcontroller.js'
+import { validate } from '../middleware/validation.js'
 
+const upload = multer({ limits: { fileSize: 1572864 } })
 const router = Router()
 
-router.get('/', [
-    query('search').optional().trim(),
-    query('status').optional().isIn(['available', 'claimed', 'all']),
-    query('sortBy').optional().isIn(['newest', 'oldest', 'cost_low', 'cost_high']),
-    query('page').optional().isInt({ min: 1 }),
-    query('limit').optional().isInt({ min: 1 })
-], getAllFood)
+router.post(
+  '/',
+  auth,
+  upload.single('image'),
+  [
+    body('title').notEmpty(),
+    body('category_id').isUUID(),
+    body('latitude').isFloat(),
+    body('longitude').isFloat()
+  ],
+  validate,
+  createFood
+)
 
-router.get('/:id', getFoodById)
-router.post('/', [
-    body('foodName').trim().notEmpty().isLength({ max: 100 }),
-    body('totalItems').isInt({ min: 1 }),
-    body('cost').isFloat({ min: 0 }),
-    body('posterName').trim().notEmpty().isLength({ max: 50 }),
-    body('phoneNumber').trim().notEmpty().matches(/^[\+]?[1-9][\d]{0,15}$/),
-    body('address').trim().notEmpty().isLength({ max: 200 }),
-    body('description').optional().trim().isLength({ max: 500 })
-], createFood)
-router.patch('/:id/status', [
-    body('status').isIn(['available', 'claimed'])
-], updateFoodStatus)
-router.delete('/:id', deleteFood)
-router.get('/stats', getFoodStats)
+router.get('/', [ query('lat').optional().isFloat(), query('lng').optional().isFloat() ], validate, listFood)
+router.get('/:id', [ param('id').isUUID() ], validate, getFood)
+router.delete('/:id', auth, [ param('id').isUUID() ], validate, deleteFood)
 
 export default router
