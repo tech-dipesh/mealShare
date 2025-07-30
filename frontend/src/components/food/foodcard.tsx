@@ -22,8 +22,8 @@ import {
   Delete,
   PersonPin,
 } from "@mui/icons-material";
-import { FoodItem } from "../types/food";
-import { formatTimeAgo, formatCurrency } from "../utils/formatdata";
+import { FoodItem } from "../../types/food";
+import { formatTimeAgo, formatCurrency } from "../../utils/formatdata";
 import { useFoodItems } from "../hooks/useUserfooditmes";
 
 interface FoodCardProps {

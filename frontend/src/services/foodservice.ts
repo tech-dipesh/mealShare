@@ -4,13 +4,13 @@ import { FoodItem, CreateFoodRequest, FoodFilters, FoodResponse, FoodStats } fro
 export const foodService = {
   getAllFood: async (filters: FoodFilters = {}): Promise<FoodResponse> => {
     const params = new URLSearchParams()
-    
+
     if (filters.search) params.append('search', filters.search)
     if (filters.status) params.append('status', filters.status)
     if (filters.sortBy) params.append('sortBy', filters.sortBy)
     if (filters.page) params.append('page', filters.page.toString())
     if (filters.limit) params.append('limit', filters.limit.toString())
-    
+
     const response = await api.get(`/food?${params.toString()}`)
     return response.data.data
   },
