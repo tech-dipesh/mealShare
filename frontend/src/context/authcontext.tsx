@@ -1,46 +1,50 @@
-import { createContext, useEffect, useState } from "react"
-import { supabase } from "../services/api"
-import { useNavigate } from "react-router-dom"
+import { createContext, useContext, useEffect, useState } from 'react'
+import { supabase } from '../services/api'
+import { User } from '@supabase/supabase-js'
 
-export const AuthContext = createContext(null)
+interface AuthContextProps {
+  user: User | null
+  loading: boolean
+  logout: () => Promise<void>
+}
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const navigate = useNavigate()
+const AuthContext = createContext<AuthContextProps | undefined>(undefined)
+
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) setUser(data.user)
-    })
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
-    })
-    return () => listener.subscription.unsubscribe()
-  }, [])
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser()
+      setUser(data.user)
+      setLoading(false)
+    }
+    getUser()
 
-  const login = async (email, password) => {
-    const { error, data } = await supabase.auth.signInWithPassword({ email, password })
-    if (!error) navigate("/food")
-    return error
-  }
+    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => {
+      listener?.subscription.unsubscribe()
+    }
+  }, [])
 
   const logout = async () => {
     await supabase.auth.signOut()
-    navigate("/")
-  }
-
-  const register = async (email, password) => {
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (!error) {
-      const { data } = await supabase.auth.signInWithPassword({ email, password })
-      if (data.user) navigate("/food")
-    }
-    return error
+    setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, loading, logout }}>
       {children}
     </AuthContext.Provider>
   )
+}
+
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) throw new Error('useAuth must be used within AuthProvider')
+  return context
 }

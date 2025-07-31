@@ -1,44 +1,49 @@
+import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { uploadImageToCloudinary } from '../../services/api'
-import { createFoodPost } from '../../services/foodservice'
-import { useNavigate } from 'react-router-dom'
+import { useFood } from '../../context/foodprovider'
+import { uploadImageToCloudinary } from '../../utils/formatdata'
+import { toast } from 'react-hot-toast'
+import { FoodFormData } from '../../types/food'
 
-export default function CreateFood() {
-  const [formData, setFormData] = useState({ title: '', description: '', image: '', location: '', expiry: '' })
-  const [file, setFile] = useState<File | null>(null)
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+const CreateFood = () => {
+  const { register, handleSubmit, reset } = useForm<FoodFormData>()
+  const { addFood } = useFood()
+  const [preview, setPreview] = useState<string>('')
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) setPreview(URL.createObjectURL(file))
   }
 
-  const handleImageUpload = async () => {
-    if (!file) return
-    setLoading(true)
-    const url = await uploadImageToCloudinary(file)
-    setFormData(prev => ({ ...prev, image: url }))
-    setLoading(false)
-  }
+  const onSubmit = async (data: FoodFormData) => {
+    try {
+      let imageUrl = ''
+      if (data.image && data.image.length > 0) {
+        imageUrl = await uploadImageToCloudinary(data.image[0])
+      }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.image && file) await handleImageUpload()
-    await createFoodPost(formData)
-    navigate('/food')
+      await addFood({ ...data, image: imageUrl })
+      toast.success('Food created')
+      reset()
+      setPreview('')
+    } catch (err) {
+      toast.error('Failed to create food')
+    }
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white p-6 shadow-md rounded">
-      <h2 className="text-xl font-semibold mb-4 text-center text-brand">Create Food Post</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="title" placeholder="Title" onChange={handleChange} className="w-full border p-2 rounded" required />
-        <textarea name="description" placeholder="Description" onChange={handleChange} className="w-full border p-2 rounded" required />
-        <input type="file" onChange={(e) => e.target.files && setFile(e.target.files[0])} className="w-full" />
-        <input name="location" placeholder="Location" onChange={handleChange} className="w-full border p-2 rounded" required />
-        <input type="datetime-local" name="expiry" onChange={handleChange} className="w-full border p-2 rounded" required />
-        <button disabled={loading} className="bg-brand text-white px-4 py-2 rounded w-full">{loading ? 'Uploading...' : 'Post'}</button>
+    <div className="max-w-xl mx-auto p-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <input {...register('title')} placeholder="Title" className="w-full border p-2 rounded" />
+        <textarea {...register('description')} placeholder="Description" className="w-full border p-2 rounded" />
+        <input {...register('location')} placeholder="Location" className="w-full border p-2 rounded" />
+        <input type="datetime-local" {...register('expiry')} className="w-full border p-2 rounded" />
+        <input type="file" {...register('image')} accept="image/*" onChange={handleImageChange} className="w-full" />
+        {preview && <img src={preview} className="h-40 object-cover rounded" />}
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
       </form>
     </div>
   )
 }
+
+export default CreateFood

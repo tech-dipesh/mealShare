@@ -1,42 +1,35 @@
-import { useEffect, useState } from 'react'
-import { getFoodPosts } from '../../services/foodservice'
+import { useFood } from '../../context/foodprovider'
 import FoodCard from './foodcard'
+import { useState } from 'react'
 
-export default function FoodList() {
-  const [foods, setFoods] = useState([])
-  const [filter, setFilter] = useState('all')
+const FoodList = () => {
+  const { foodList } = useFood()
+  const [filter, setFilter] = useState<'All' | 'Claimed' | 'Available'>('All')
 
-  useEffect(() => {
-    fetchFoods()
-  }, [])
-
-  const fetchFoods = async () => {
-    const data = await getFoodPosts()
-    setFoods(data)
-  }
-
-  const handleClaim = (id: string) => {
-    setFoods(prev => prev.map(f => f.id === id ? { ...f, claimed: true } : f))
-  }
-
-  const filtered = foods.filter(f => {
-    if (filter === 'all') return true
-    if (filter === 'claimed') return f.claimed
-    return !f.claimed
-  })
+  const filtered = foodList.filter(food =>
+    filter === 'All' ? true :
+    filter === 'Claimed' ? food.claimedBy !== null :
+    food.claimedBy === null
+  )
 
   return (
-    <div className="p-4">
-      <div className="mb-4 flex gap-2">
-        <button onClick={() => setFilter('all')} className="bg-brand text-white px-4 py-1 rounded">All</button>
-        <button onClick={() => setFilter('claimed')} className="bg-gray-300 px-4 py-1 rounded">Claimed</button>
-        <button onClick={() => setFilter('available')} className="bg-gray-300 px-4 py-1 rounded">Available</button>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map(food => (
-          <FoodCard key={food.id} food={food} onClaim={handleClaim} />
+    <div className="p-6 space-y-4">
+      <div className="flex gap-4 mb-4">
+        {['All', 'Available', 'Claimed'].map(f => (
+          <button
+            key={f}
+            onClick={() => setFilter(f as any)}
+            className={`px-3 py-1 border rounded ${filter === f ? 'bg-blue-600 text-white' : ''}`}
+          >
+            {f}
+          </button>
         ))}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filtered.map(food => <FoodCard key={food.id} food={food} />)}
       </div>
     </div>
   )
 }
+
+export default FoodList
