@@ -1,24 +1,35 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { Container } from '@mui/material'
-import Header from './components/common/header'
-import Footer from './components/common/footer'
-import {Home} from "./pages/home"
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './context/authcontext'
+import { FoodProvider } from './context/foodprovider'
+import Home from './pages/home'
+import Auth from './pages/auth'
+import Food from './pages/food'
+import MyPosts from './pages/myposts'
+import Profile from './pages/profile'
+import UserProfile from './pages/userprofile'
+import NotFound from './pages/notfound'
+import Header from './components/header'
+import Footer from './components/footer'
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <Header />
-      <main className="flex-1">
-        <Container maxWidth="lg" className="py-8">
+    <Router>
+      <AuthProvider>
+        <FoodProvider>
+          <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path='/' element={<Home />} />
+            <Route path='/auth' element={<Auth />} />
+            <Route path='/food' element={<Food />} />
+            <Route path='/myposts' element={<MyPosts />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/userprofile/:id' element={<UserProfile />} />
+            <Route path='*' element={<NotFound />} />
           </Routes>
-        </Container>
-      </main>
-      <Footer />
-    </div>
+          <Footer />
+        </FoodProvider>
+      </AuthProvider>
+    </Router>
   )
 }
 

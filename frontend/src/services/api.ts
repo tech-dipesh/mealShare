@@ -1,40 +1,7 @@
-import axios from 'axios'
-import toast from 'react-hot-toast'
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '../types/config/supabaseclient'
 
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-const API_URL='http://localhost:5000/api'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 
-const api = axios.create({
-  baseURL: API_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
-
-api.interceptors.request.use(
-  (config) => {
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-api.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  (error) => {
-    if (error.response?.data?.message) {
-      toast.error(error.response.data.message)
-    } else if (error.message) {
-      toast.error(error.message)
-    } else {
-      toast.error('Something went wrong')
-    }
-    return Promise.reject(error)
-  }
-)
-
-export default api
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey)

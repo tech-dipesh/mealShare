@@ -1,41 +1,25 @@
-import api from './api'
-import { FoodItem, CreateFoodRequest, FoodFilters, FoodResponse, FoodStats } from '../types/food'
+import { supabase } from './api'
+import { Food } from '../types/food'
 
-export const foodService = {
-  getAllFood: async (filters: FoodFilters = {}): Promise<FoodResponse> => {
-    const params = new URLSearchParams()
+export const fetchFoods = async () => {
+  const { data, error } = await supabase.from('foods').select('*').order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
 
-    if (filters.search) params.append('search', filters.search)
-    if (filters.status) params.append('status', filters.status)
-    if (filters.sortBy) params.append('sortBy', filters.sortBy)
-    if (filters.page) params.append('page', filters.page.toString())
-    if (filters.limit) params.append('limit', filters.limit.toString())
+export const createFood = async (food: Partial<Food>) => {
+  const { data, error } = await supabase.from('foods').insert(food).select().single()
+  if (error) throw error
+  return data
+}
 
-    const response = await api.get(`/food?${params.toString()}`)
-    return response.data.data
-  },
+export const updateFood = async (id: string, updates: Partial<Food>) => {
+  const { data, error } = await supabase.from('foods').update(updates).eq('id', id).select().single()
+  if (error) throw error
+  return data
+}
 
-  getFoodById: async (id: string): Promise<FoodItem> => {
-    const response = await api.get(`/food/${id}`)
-    return response.data.data
-  },
-
-  createFood: async (foodData: CreateFoodRequest): Promise<FoodItem> => {
-    const response = await api.post('/food', foodData)
-    return response.data.data
-  },
-
-  updateFoodStatus: async (id: string, status: 'available' | 'claimed'): Promise<FoodItem> => {
-    const response = await api.patch(`/food/${id}/status`, { status })
-    return response.data.data
-  },
-
-  deleteFood: async (id: string): Promise<void> => {
-    await api.delete(`/food/${id}`)
-  },
-
-  getFoodStats: async (): Promise<FoodStats> => {
-    const response = await api.get('/food/stats')
-    return response.data.data
-  }
+export const deleteFood = async (id: string) => {
+  const { error } = await supabase.from('foods').delete().eq('id', id)
+  if (error) throw error
 }
