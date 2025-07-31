@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState } from "react"
 import { getFoods } from "../services/foodservice"
 
 export const FoodContext = createContext(null)

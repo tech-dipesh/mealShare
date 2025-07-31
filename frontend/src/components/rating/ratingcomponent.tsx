@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export default function RatingComponent({ onRate }: { onRate: (rating: number) => void }) {
   const [rating, setRating] = useState(0)

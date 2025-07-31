@@ -1,19 +1,22 @@
-import { useState } from 'react'
-import { supabase } from '../../types/config/supabaseClient'
-import { toast } from 'react-toastify'
+import React, { useState } from 'react';
+import { supabase } from "../../types/config/supabaseClient"; // Ensure consistent casing
+import { toast } from 'react-toastify';
 
 const ForgetPassword = () => {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('');
 
   const handleReset = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const { error } = await supabase.auth.resetPasswordForEmail(email)
-    if (error) {
-      toast.error('Reset failed')
-    } else {
-      toast.success('Password reset link sent')
+    e.preventDefault();
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'http://localhost:3000/reset-password'
+      });
+      if (error) throw error;
+      toast.success('Password reset link sent');
+    } catch (error) {
+      toast.error(error.message || 'Reset failed');
     }
-  }
+  };
 
   return (
     <form onSubmit={handleReset} className="flex flex-col gap-4 p-4 max-w-sm mx-auto">
@@ -24,10 +27,13 @@ const ForgetPassword = () => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="border px-4 py-2 rounded"
+        required
       />
-      <button type="submit" className="bg-primary text-white py-2 rounded hover:opacity-90">Reset</button>
+      <button type="submit" className="bg-primary text-white py-2 rounded hover:opacity-90">
+        Reset
+      </button>
     </form>
-  )
-}
+  );
+};
 
-export default ForgetPassword
+export default ForgetPassword;

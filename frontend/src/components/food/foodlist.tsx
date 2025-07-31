@@ -1,6 +1,6 @@
-import { useFood } from '../../context/foodprovider'
+import React, { useState } from 'react'
+import { useFood } from '../../context/foodProvider'
 import FoodCard from './foodcard'
-import { useState } from 'react'
 
 const FoodList = () => {
   const { foodList } = useFood()

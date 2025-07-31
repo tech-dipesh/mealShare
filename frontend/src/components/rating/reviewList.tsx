@@ -1,3 +1,5 @@
+import React from "react"
+
 export default function ReviewList({ reviews }: { reviews: { user: string, comment: string, rating: number }[] }) {
   return (
     <div className="space-y-3 mt-4">

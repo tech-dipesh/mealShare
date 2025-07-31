@@ -1,3 +1,4 @@
+import React from 'react'
 import FoodList from '../components/food/FoodList'
 
 const FoodPage = () => {

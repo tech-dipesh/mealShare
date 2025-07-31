@@ -1,6 +1,7 @@
 import { FoodItem } from '../../types/food'
 import { useFood } from '../../context/foodprovider'
 import { useAuth } from '../../hooks/useauth'
+import React from 'react'
 
 interface Props {
   food: FoodItem

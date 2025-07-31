@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-
+import React from 'react'
 const Header = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()

@@ -1,5 +1,5 @@
 import { useUser } from "../../hooks/useUser"
-import { useContext } from "react"
+import React, { useContext } from "react"
 import { FoodContext } from "../../context/foodProvider"
 import FoodCard from "../food/foodcard"
 

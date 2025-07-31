@@ -1,3 +1,5 @@
+import React from "react"
+
 interface FoodStatusProps {
   status: 'Claimed' | 'Available'
 }

@@ -1,5 +1,5 @@
 import { useAuth } from '../../hooks/useauth'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 const Profile = () => {
   const { user, updateProfile } = useAuth()
