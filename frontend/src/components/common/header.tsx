@@ -1,36 +1,33 @@
-import React from 'react'
-import { AppBar, Toolbar, Typography, Box, Button } from '@mui/material'
-import { Restaurant } from '@mui/icons-material'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 
-const Header: React.FC = () => {
+const Header = () => {
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/')
+  }
+
   return (
-    <AppBar position="static" className="bg-white shadow-soft">
-      <Toolbar className="px-4">
-        <Box className="flex items-center space-x-2 flex-1">
-          <Restaurant className="text-primary-600 text-3xl" />
-          <Typography
-            variant="h5"
-            component="div"
-            className="font-bold text-gray-800"
-          >
-            FoodShare
-          </Typography>
-        </Box>
-        
-        <Box className="flex items-center space-x-4">
-          <Typography variant="body2" className="text-gray-600 hidden sm:block">
-            Reduce Food Waste, Share Locally
-          </Typography>
-          <Button 
-            variant="outlined" 
-            size="small"
-            className="text-primary-600 border-primary-600 hover:bg-primary-50"
-          >
-            About
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <header className="bg-primary text-white px-6 py-4 flex justify-between items-center">
+      <Link to="/" className="text-xl font-bold">MealShare</Link>
+      <nav className="flex gap-4">
+        {user ? (
+          <>
+            <Link to="/food">Foods</Link>
+            <Link to="/profile">Profile</Link>
+            <button onClick={handleLogout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <Link to="/auth">Login</Link>
+            <Link to="/auth">Register</Link>
+          </>
+        )}
+      </nav>
+    </header>
   )
 }
 
