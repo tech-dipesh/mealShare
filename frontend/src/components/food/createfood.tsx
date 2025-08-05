@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { foodService, CreateFoodData } from '../../services/foodService'
+import { foodService, CreateFoodData } from '../../services/foodservice'
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 
@@ -70,8 +70,9 @@ const CreateFood = () => {
       reset()
       setPreview('')
       navigate('/food')
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to create food item')
+    } catch (error) {
+      const err=error as {response?: {data?:{message?:string}}}
+      toast.error(err.response?.data?.message || 'Failed to create food item')
     } finally {
       setLoading(false)
     }

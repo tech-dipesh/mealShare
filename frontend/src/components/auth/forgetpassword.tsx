@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from "../../types/config/supabaseClient"; // Ensure consistent casing
+import supabase from "../../types/config/supabaseclient"
 import { toast } from 'react-toastify';
 
 const ForgetPassword = () => {

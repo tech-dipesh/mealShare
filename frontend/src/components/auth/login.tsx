@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useAuth } from "../../context/authContext"
+import { useAuth } from "../../context/authcontext"
 import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 
@@ -18,8 +18,9 @@ const Login = () => {
       await login(email, password)
       toast.success("Login successful")
       navigate("/food")
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed")
+    } catch (error) {
+      const err=error as {response ?: {data?: {message?: string}}}
+      toast.error(err.response?.data?.message || "Login failed")
     } finally {
       setLoading(false)
     }
@@ -54,3 +55,4 @@ const Login = () => {
     </form>
   )
 }
+export default Login;

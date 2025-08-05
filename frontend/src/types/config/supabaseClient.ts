@@ -1,3 +1,4 @@
+import { createClient } from '@supabase/supabase-js';
 export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
 
 export interface Database {
@@ -32,3 +33,11 @@ export interface Database {
     }
   }
 }
+
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey)
+
+export default supabase;
