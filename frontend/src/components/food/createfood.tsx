@@ -1,46 +1,151 @@
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import React, { useState } from 'react'
-import { useFood } from '../../context/foodprovider'
-import { uploadImageToCloudinary } from '../../utils/formatdata'
+import { foodService, CreateFoodData } from '../../services/foodService'
 import { toast } from 'react-hot-toast'
-import { FoodFormData } from '../../types/food'
+import { useNavigate } from 'react-router-dom'
+
+interface Category {
+  id: string
+  name: string
+  type: string
+  icon_url?: string
+}
 
 const CreateFood = () => {
-  const { register, handleSubmit, reset } = useForm<FoodFormData>()
-  const { addFood } = useFood()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateFoodData>()
+  const [categories, setCategories] = useState<Category[]>([])
   const [preview, setPreview] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
+  const navigate = useNavigate()
+
+  // Get user's current location for default coordinates
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        },
+        (error) => console.warn('Location access denied:', error)
+      )
+    }
+  }, [])
+
+  // Fetch categories for dropdown
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        const data = await response.json()
+        setCategories(data)
+      } catch (error) {
+        console.error('Failed to fetch categories:', error)
+      }
+    }
+    fetchCategories()
+  }, [])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) setPreview(URL.createObjectURL(file))
+    if (file) {
+      setPreview(URL.createObjectURL(file))
+    }
   }
 
-  const onSubmit = async (data: FoodFormData) => {
+  const onSubmit = async (data: CreateFoodData & { image: FileList }) => {
+    setLoading(true)
     try {
-      let imageUrl = ''
-      if (data.image && data.image.length > 0) {
-        imageUrl = await uploadImageToCloudinary(data.image[0])
+      const submitData: CreateFoodData = {
+        ...data,
+        latitude: userLocation?.lat || 0, // Use current location or 0
+        longitude: userLocation?.lng || 0,
+        image: data.image?.[0] // Extract file from FileList
       }
 
-      await addFood({ ...data, image: imageUrl })
-      toast.success('Food created')
+      await foodService.createFood(submitData)
+      toast.success('Food item created successfully!')
       reset()
       setPreview('')
-    } catch (err) {
-      toast.error('Failed to create food')
+      navigate('/food')
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Failed to create food item')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div className="max-w-xl mx-auto p-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input {...register('title')} placeholder="Title" className="w-full border p-2 rounded" />
-        <textarea {...register('description')} placeholder="Description" className="w-full border p-2 rounded" />
-        <input {...register('location')} placeholder="Location" className="w-full border p-2 rounded" />
-        <input type="datetime-local" {...register('expiry')} className="w-full border p-2 rounded" />
-        <input type="file" {...register('image')} accept="image/*" onChange={handleImageChange} className="w-full" />
-        {preview && <img src={preview} className="h-40 object-cover rounded" />}
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+    <div className="max-w-2xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Share Food</h1>
+      
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <input
+            {...register('title', { required: 'Title is required' })}
+            placeholder="Food title (e.g., Fresh Vegetables, Cooked Rice)"
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+        </div>
+
+        <div>
+          <textarea
+            {...register('description')}
+            placeholder="Description (optional)"
+            rows={3}
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <div>
+          <select
+            {...register('category_id', { required: 'Please select a category' })}
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Category</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {errors.category_id && <p className="text-red-500 text-sm mt-1">{errors.category_id.message}</p>}
+        </div>
+
+        <div>
+          <input
+            {...register('address', { required: 'Address is required' })}
+            placeholder="Pickup address"
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+        </div>
+
+        <div>
+          <input
+            type="file"
+            {...register('image')}
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {preview && (
+            <div className="mt-2">
+              <img src={preview} alt="Preview" className="h-40 w-40 object-cover rounded-lg" />
+            </div>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+        >
+          {loading ? "Creating..." : "Share Food"}
+        </button>
       </form>
     </div>
   )
