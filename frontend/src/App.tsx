@@ -11,6 +11,7 @@ import NotFound from './pages/notfound'
 import PrivateRoute from './components/common/privateroute'
 import Header from './components/common/header'
 import Footer from './components/common/footer'
+import React from 'react'
 
 const App = () => {
   return (

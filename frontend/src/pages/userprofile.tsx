@@ -1,4 +1,5 @@
-import UserPublicPosts from '../components/user/UserPublicPosts'
+import React from 'react'
+import UserPublicPosts from '../components/user/userPosts'
 
 const UserProfilePage = () => {
   return (

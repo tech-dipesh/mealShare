@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Dialog } from '@headlessui/react'
 
 interface EditProfileModalProps {
   isOpen: boolean
@@ -16,34 +15,43 @@ const EditProfileModal = ({ isOpen, onClose, onSave }: EditProfileModalProps) =>
     onClose()
   }
 
+  if (!isOpen) return null
+
   return (
-    <Dialog open={isOpen} onClose={onClose} className="relative z-50">
-      <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-      <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="w-full max-w-md p-6 bg-white rounded shadow">
-          <Dialog.Title className="text-lg font-medium">Edit Profile</Dialog.Title>
-          <div className="mt-4 space-y-4">
-            <input
-              type="text"
-              placeholder="Enter name"
-              className="w-full px-4 py-2 border rounded"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImage(e.target.files?.[0] || null)}
-              className="block w-full text-sm"
-            />
-            <div className="flex justify-end gap-2">
-              <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-              <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 className="text-xl font-semibold mb-4">Edit Profile</h2>
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Enter name"
+            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files?.[0] || null)}
+            className="block w-full text-sm"
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+            >
+              Save
+            </button>
           </div>
-        </Dialog.Panel>
+        </div>
       </div>
-    </Dialog>
+    </div>
   )
 }
 

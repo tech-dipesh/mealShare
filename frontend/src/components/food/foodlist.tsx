@@ -7,6 +7,12 @@ const FoodList = () => {
   const [foods, setFoods] = useState<FoodItem[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'available' | 'claimed'>('all')
+  const filterOptions: { key: 'all' | 'available' | 'claimed'; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'available', label: 'Available' },
+  { key: 'claimed', label: 'Claimed' }
+]
+
 
   const fetchFoods = async () => {
     try {
@@ -41,6 +47,7 @@ const FoodList = () => {
     )
   }
 
+
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
@@ -48,23 +55,19 @@ const FoodList = () => {
         
         {/* Filter buttons */}
         <div className="flex gap-2">
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'available', label: 'Available' },
-            { key: 'claimed', label: 'Claimed' }
-          ].map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setFilter(key as any)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                filter === key
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+       {filterOptions.map(({ key, label }) => (
+  <button
+    key={key}
+    onClick={() => setFilter(key)}
+    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+      filter === key
+        ? 'bg-blue-600 text-white'
+        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+    }`}
+  >
+    {label}
+  </button>
+    ))}
         </div>
       </div>
 

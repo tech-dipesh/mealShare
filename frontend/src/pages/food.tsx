@@ -1,5 +1,5 @@
 import React from 'react'
-import FoodList from '../components/food/FoodList'
+import FoodList from '../components/food/foodlist'
 
 const FoodPage = () => {
   return (

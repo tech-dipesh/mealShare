@@ -1,7 +1,7 @@
 import React from 'react'
-import { FoodItem } from '../../services/foodService'
-import { claimService } from '../../services/claimService'
-import { useAuth } from '../../context/authContext'
+import { FoodItem } from '../../services/foodservice'
+import { claimService } from '../../services/claimservice'
+import { useAuth } from '../../context/authcontext'
 import { toast } from 'react-hot-toast'
 
 interface Props {
@@ -24,8 +24,9 @@ const FoodCard = ({ food, onUpdate }: Props) => {
       await claimService.createClaim(food.id)
       toast.success('Food claimed successfully!')
       onUpdate?.() // Refresh the food list
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to claim food')
+    } catch (error) {
+       const err=error as {response?: {data?:{message?:string}}}
+      toast.error(err.response?.data?.message || 'Failed to claim food')
     } finally {
       setClaiming(false)
     }

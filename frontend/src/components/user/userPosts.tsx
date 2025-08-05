@@ -1,17 +1,18 @@
 import { useUser } from "../../hooks/useUser"
-import React, { useContext } from "react"
-import { FoodContext } from "../../context/foodProvider"
+import React  from "react"
+import { useFood } from "../../context/foodProvider"
+import {FoodItem} from "../../services/foodservice"
 import FoodCard from "../food/foodcard"
 
 export default function UserPosts() {
   const { user } = useUser()
-  const { foods } = useContext(FoodContext)
+  const { foodList } = useFood()
 
-  const myPosts = foods.filter(f => f.user_id === user?.id)
+  const myPosts = foodList.filter(f => f.user_id === user?.id)
 
   return (
     <div className="p-4 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {myPosts.map(f => <FoodCard key={f.id} food={f} />)}
+      {myPosts.map(f => <FoodCard key={f.id} food={f as FoodItem} />)}
     </div>
   )
 }

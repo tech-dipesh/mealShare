@@ -12,6 +12,7 @@ export const uploadToCloudinary = async (file: File): Promise<string | null> => 
     const data = await response.json()
     return data.secure_url || null
   } catch (error) {
-    return null
+    return error.message;
+    // return null
   }
 }

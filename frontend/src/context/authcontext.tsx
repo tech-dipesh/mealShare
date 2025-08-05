@@ -8,9 +8,10 @@ interface AuthContextProps {
   logout: () => Promise<void>
   login: (email: string, password: string) => Promise<void>
   register: (name: string, email: string, password: string) => Promise<void>
+  updateProfile: (data: { name: string; photo: File | null }) => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined)
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined)
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
@@ -64,8 +65,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(data.user)
   }
 
+const updateProfile = async ({ name, photo }: { name: string; photo: File | null }) => {
+  const updates: { data: { full_name: string; photo_url?: string } } = {
+    data: { full_name: name },
+  }
+
+  if (photo) {
+    const fileExt = photo.name.split('.').pop()
+    const fileName = `${user?.id}.${fileExt}`
+    await supabase.storage.from('avatars').upload(`public/${fileName}`, photo, { upsert: true })
+
+    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/public/${fileName}`
+    updates.data.photo_url = url
+  }
+
+  await supabase.auth.updateUser(updates)
+  const { data } = await supabase.auth.getUser()
+  setUser(data.user)
+}
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout, login, register }}>
+    <AuthContext.Provider value={{ user, loading, logout, login, register, updateProfile }}>
       {children}
     </AuthContext.Provider>
   )
