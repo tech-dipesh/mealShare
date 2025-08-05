@@ -8,7 +8,8 @@ export default function UserPosts() {
   const { user } = useUser()
   const { foodList } = useFood()
 
-  const myPosts = foodList.filter(f => f.user_id === user?.id)
+  // const myPosts = foodList.filter(f => f.user_id === user?.id)
+  const myPosts = foodList.filter(f => f.poster_id === user?.id)
 
   return (
     <div className="p-4 grid md:grid-cols-2 lg:grid-cols-3 gap-4">

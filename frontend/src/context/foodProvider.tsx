@@ -1,17 +1,23 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react"
-import { getFoods } from "../services/foodservice"
+import { foodService } from "../services/foodservice"
 
 interface Food {
   id: string
   title: string
   description: string
-  image: string
-  location: string
-  expiry: string
-  claimedBy: string | null
+  category_id: string
+  poster_id: string
+  address: string
+  latitude: number
+  longitude: number
+  image_url?: string
+  image_id?: string
+  status: 'available' | 'claimed' | 'completed'
+  expires_at: string
   created_at: string
-  user_id: string
 }
+
+
 
 interface FoodContextType {
   foodList: Food[]
@@ -27,19 +33,21 @@ export const FoodProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchFoods = async () => {
     try {
-      const data = await getFoods()
+      const data = await foodService.getFoods()
       setFoodList(data)
     } catch (error) {
       console.error('Failed to fetch foods:', error)
     }
   }
 
-  const addFood = async (food: Omit<Food, 'id' | 'created_at'>) => {
+  // const addFood = async (_food: Omit<Food, 'id' | 'created_at'>) => {
+  const addFood=async()=>{
     // Implementation for adding food
     await fetchFoods() // Refresh after adding
   }
 
-  const claimFood = async (foodId: string) => {
+  // const claimFood = async (_foodId: string) => {
+  const claimFood=async()=>{
     // Implementation for claiming food
     await fetchFoods() // Refresh after claiming
   }

@@ -33,10 +33,10 @@ export const foodService = {
     return response.data
   },
 
-  async getFood(id: string) {
-    const response = await api.get(`/food/${id}`)
-    return response.data
-  },
+  // async getFoods(id: string) {
+  //   const response = await api.get(`/food/${id}`)
+  //   return response.data
+  // },
 
   async createFood(data: CreateFoodData) {
     // Handle multipart form data for image upload
