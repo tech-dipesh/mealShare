@@ -1,6 +1,5 @@
-import { jwtSecret } from '../config/jwt.js'
+import { jwtSecret, verifyToken } from '../config/jwt.js'
 import { unauthorized } from '../utils/response.js'
-
 // export const auth = (req, res, next) => {
 //   const header = req.headers.authorization
 //   if (!header) return unauthorized(res, 'Missing token')

@@ -2,7 +2,7 @@ import {supabase} from '../config/supabase.js';
 import transporter from '../config/email.js';
 import { signToken } from '../config/jwt.js';
 import bcrypt from 'bcrypt';
-
+import { verifyToken } from '../config/jwt.js';
 export const register = async (req, res, next) => {
   const { name, email, password } = req.body;
   const { data: existing, error: existErr } = await supabase
@@ -14,9 +14,11 @@ export const register = async (req, res, next) => {
   const password_hash = await bcrypt.hash(password, 10);
   const { data, error } = await supabase
     .from('users')
-    .insert({ name, email, password_hash });
+    .insert({ name, email, password_hash })
+    .select()
+    .select();
   if (error) return next(error);
-  const token = signToken({ id: data[0].id });
+  const token = signToken({ id: data.id });
   await transporter.sendMail({
     to: email,
     subject: 'Verify your email',
