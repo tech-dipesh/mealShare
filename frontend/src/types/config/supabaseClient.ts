@@ -35,8 +35,8 @@ export interface Database {
 }
 
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ||"Key is missing or not found"
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "anon key is not found";
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey)
 
