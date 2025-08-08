@@ -10,7 +10,7 @@ import ratingRoutes from './routes/rating.js';
 import userRoutes from './routes/user.js';
 import { errorHandler } from './middleware/errorhandle.js';
 import rateLimit from 'express-rate-limit'
-dotenv.config();
+dotenv.config({override: true});
 const app = express();
 
 app.use(helmet())

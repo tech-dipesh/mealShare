@@ -11,9 +11,15 @@ interface Category {
   icon_url?: string
 }
 
+interface CreateFoodFormData extends Omit<CreateFoodData, 'image'> {
+  image: FileList;
+}
+
+
 const CreateFood = () => {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateFoodData>()
-  const [categories, setCategories] = useState<Category[]>([])
+  // Update useForm to use the extended type
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<CreateFoodFormData>()
+const [categories, setCategories] = useState<Category[]>([])
   const [preview, setPreview] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null)
@@ -55,14 +61,14 @@ const CreateFood = () => {
     }
   }
 
-  const onSubmit = async (data: CreateFoodData & { image: FileList }) => {
+   const onSubmit = async (data: CreateFoodFormData) => {
     setLoading(true)
     try {
       const submitData: CreateFoodData = {
         ...data,
-        latitude: userLocation?.lat || 0, // Use current location or 0
+        latitude: userLocation?.lat || 0,
         longitude: userLocation?.lng || 0,
-        image: data.image?.[0] // Extract file from FileList
+        image: data.image[0] // Access first file from FileList
       }
 
       await foodService.createFood(submitData)
